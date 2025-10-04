@@ -1,4 +1,4 @@
-package nexio.api_server.common.code
+package nexio.api_server.application.common.code
 
 import org.springframework.http.HttpStatus
 

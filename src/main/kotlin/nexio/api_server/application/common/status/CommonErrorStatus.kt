@@ -1,6 +1,6 @@
-package nexio.api_server.common.status
+package nexio.api_server.application.common.status
 
-import nexio.api_server.common.code.BaseErrorCode
+import nexio.api_server.application.common.code.BaseErrorCode
 import org.springframework.http.HttpStatus
 
 enum class CommonErrorStatus(

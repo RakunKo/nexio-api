@@ -1,4 +1,4 @@
-package nexio.api_server.common.utils
+package nexio.api_server.application.common.utils
 
 fun String.formatErrorMessage(data: List<Any?>): String =
         if (data.isEmpty()) this
