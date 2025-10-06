@@ -1,0 +1,15 @@
+spring:
+  r2dbc:
+    url: r2dbc:mysql://localhost:3306/nexio
+    username: root
+    password: 0782
+  sql:
+    init:
+      platform: mysql
+      mode: never
+  flyway:
+    enabled: true
+    url: jdbc:mysql://localhost:3306/nexio
+    user: root
+    password: 0782
+    locations: classpath:db/migration/v1
