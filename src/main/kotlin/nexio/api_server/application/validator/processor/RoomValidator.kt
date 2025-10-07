@@ -1,4 +1,4 @@
-package nexio.api_server.application.validator
+package nexio.api_server.application.validator.processor
 
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.server.ServerRequest

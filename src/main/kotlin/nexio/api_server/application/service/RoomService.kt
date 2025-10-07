@@ -20,13 +20,5 @@ class RoomService(
                 ?: throw ApiException(CommonErrorStatus.NOT_FOUND, listOf(id))
     }
 
-    suspend fun postRoom(body: PostRoomRequest): Room {
-        val entity = body.toEntity()
-        println("Entity before save: id=${entity.id}, roomId=${entity.getId()}")
-
-        val saved = roomRepository.save(entity)
-        println("Entity after save: id=${saved.id}, roomId=${saved.getId()}")
-
-        return saved
-    }
+    suspend fun postRoom(body: PostRoomRequest): Room = roomRepository.save(body.toEntity())
 }

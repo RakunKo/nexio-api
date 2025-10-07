@@ -10,7 +10,7 @@ class ApiException(
     val status = err.status
 
     fun toResponse(): Map<String, Any> = mapOf(
-            "status" to err.status,
+            "status" to err.status.value(),
             "message" to err.message.formatErrorMessage(data)
     )
 }
