@@ -3,6 +3,7 @@ package nexio.api_server.infrastructure.security.jwt
 import io.jsonwebtoken.Jwts
 import kotlinx.coroutines.reactor.mono
 import kotlinx.coroutines.runBlocking
+import nexio.api_server.domain.User
 import nexio.api_server.infrastructure.security.key.JwtKey
 import nexio.api_server.infrastructure.security.key.KeyManager
 import org.springframework.security.oauth2.jwt.NimbusReactiveJwtDecoder
@@ -25,27 +26,26 @@ class JwtProvider(
     private var cachedJwtKey: JwtKey? = null
     private var keyLoadedAt: Instant? = null
     private val cacheExpiry = Duration.ofHours(1)
-    suspend fun generateJwtToken(subject: String, roles: List<String>): JwtToken = JwtToken(
-            accessToken = generateToken(subject, roles, 3600),
-            refreshToken = generateToken(subject, emptyList(), 604800)
+    suspend fun generateJwtToken(subject: String, user: User): JwtToken = JwtToken(
+            accessToken = generateToken(subject, user, 3600),
+            refreshToken = generateToken(subject, user, 604800)
     )
-
 
     fun getJwtDecoder(): ReactiveJwtDecoder {
         val publicKey = runBlocking { getKey().publicKey.toPublicKey() }
         return NimbusReactiveJwtDecoder.withPublicKey(publicKey as RSAPublicKey).build()
     }
-    fun generateJwtTokenMono(subject: String, roles: List<String>): Mono<JwtToken> = mono { generateJwtToken(subject, roles) }
+    fun generateJwtTokenMono(subject: String, user: User): Mono<JwtToken> = mono { generateJwtToken(subject, user) }
 
-    private suspend fun generateToken(subject: String, roles: List<String>, expiration: Long): String {
+    private suspend fun generateToken(subject: String, user: User, expiration: Long): String {
         val now = Instant.now()
 
         return Jwts.builder()
                 .subject(subject)
                 .apply {
-                    if (roles.isNotEmpty()) {
-                        claim("roles", roles)
-                    }
+                    claim("roles", user.role)
+                    claim("id", user.id)
+                    claim("status", user.status)
                 }
                 .issuedAt(Date.from(now))
                 .expiration(Date.from(now.plusSeconds(expiration)))
@@ -69,7 +69,6 @@ class JwtProvider(
         return keyFactory.generatePrivate(keySpec)
     }
 
-    // Public key 변환
     private fun ByteArray.toPublicKey(): Key {
         val keySpec = X509EncodedKeySpec(this)
         val keyFactory = KeyFactory.getInstance("RSA")

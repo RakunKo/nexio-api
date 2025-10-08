@@ -71,7 +71,7 @@ class SecurityConfig(
             Mono.defer {
                 mono { userService.getUser(UserIdentifier.ByProvider(subject)) }
             }.flatMap { foundUser ->
-                jwtProvider.generateJwtTokenMono(subject, listOf("ROLE_${foundUser.role.name}"))
+                jwtProvider.generateJwtTokenMono(subject, foundUser)
             }.flatMap { jwt ->
                 val response = mapOf(
                         "accessToken" to jwt.accessToken,

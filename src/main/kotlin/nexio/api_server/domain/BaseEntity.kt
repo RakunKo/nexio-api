@@ -13,6 +13,7 @@ import java.util.*
 abstract class BaseEntity (
         @Id
         @Column("id")
+        @field:JsonIgnore
         open var entityId: UUID = UUID.randomUUID(),
 
         @CreatedDate
